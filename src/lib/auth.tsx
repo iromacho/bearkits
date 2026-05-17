@@ -17,7 +17,7 @@ type AuthCtx = {
 
 const Ctx = createContext<AuthCtx | null>(null);
 
-const adminEmails = (import.meta.env.VITE_FIREBASE_ADMIN_EMAILS ?? "")
+const adminEmails = (import.meta.env.VITE_FIREBASE_ADMIN_EMAILS ?? "osoatleti@gmail.com")
   .split(",")
   .map((email) => email.trim().toLowerCase())
   .filter(Boolean);
