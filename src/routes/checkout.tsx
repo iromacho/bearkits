@@ -20,6 +20,8 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 function CheckoutPage() {
   const { items, total, clear } = useCart();
   const { user } = useAuth();
@@ -39,7 +41,7 @@ function CheckoutPage() {
     if (items.length === 0) return toast.error("Tu carrito está vacío");
     setLoading(true);
     const payload = {
-      user_id: user?.id ?? null,
+      user_id: user?.id && uuidPattern.test(user.id) ? user.id : null,
       customer_name: form.name,
       customer_email: form.email,
       customer_phone: form.phone || null,

@@ -50,8 +50,7 @@ function AdminPage() {
           Tu cuenta ({user.email}) no tiene permisos de administrador.
         </p>
         <p className="mt-4 text-xs text-muted-foreground">
-          Para activar admin: ejecuta en la base de datos<br />
-          <code className="rounded bg-muted px-1.5 py-0.5">INSERT INTO user_roles(user_id, role) VALUES ('{user.id}', 'admin');</code>
+          Para activar admin con Firebase, añade este email a <code className="rounded bg-muted px-1.5 py-0.5">VITE_FIREBASE_ADMIN_EMAILS</code>.
         </p>
       </div>
     );

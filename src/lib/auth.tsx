@@ -1,54 +1,80 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { Session, User } from "@supabase/supabase-js";
+import {
+  createAccountWithEmailPassword,
+  signInWithEmailPassword,
+  signInWithGoogle,
+  signOutOfFirebase,
+  watchFirebaseAuth,
+  type BearkitsFirebaseUser,
+} from "@/integrations/firebase";
 
 type AuthCtx = {
-  user: User | null;
-  session: Session | null;
+  user: BearkitsFirebaseUser | null;
+  session: null;
   isAdmin: boolean;
   loading: boolean;
+  signInWithGoogle: () => Promise<BearkitsFirebaseUser>;
+  signInWithEmailPassword: (email: string, password: string) => Promise<BearkitsFirebaseUser>;
+  createAccountWithEmailPassword: (
+    name: string,
+    email: string,
+    password: string,
+  ) => Promise<BearkitsFirebaseUser>;
   signOut: () => Promise<void>;
 };
 
 const Ctx = createContext<AuthCtx | null>(null);
 
+const adminEmails = [
+  "osoatleti@gmail.com",
+  ...(import.meta.env.VITE_FIREBASE_ADMIN_EMAILS ?? "").split(","),
+]
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState<BearkitsFirebaseUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.user) {
-        // Defer role check to avoid deadlocks
-        setTimeout(async () => {
-          const { data } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", s.user.id)
-            .eq("role", "admin")
-            .maybeSingle();
-          setIsAdmin(!!data);
-        }, 0);
-      } else {
-        setIsAdmin(false);
-      }
-    });
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    let unsubscribe: (() => void) | undefined;
+    let mounted = true;
+
+    watchFirebaseAuth((firebaseUser) => {
+      if (!mounted) return;
+      setUser(firebaseUser);
       setLoading(false);
-    });
-    return () => sub.subscription.unsubscribe();
+    })
+      .then((unsub) => {
+        if (mounted) unsubscribe = unsub;
+        else unsub();
+      })
+      .catch((error) => {
+        console.error("[Firebase] No se pudo iniciar Auth", error);
+        if (mounted) setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+      unsubscribe?.();
+    };
   }, []);
 
-  const value = useMemo<AuthCtx>(() => ({
-    user, session, isAdmin, loading,
-    signOut: async () => { await supabase.auth.signOut(); },
-  }), [user, session, isAdmin, loading]);
+  const isAdmin = !!user?.email && adminEmails.includes(user.email.toLowerCase());
+
+  const value = useMemo<AuthCtx>(
+    () => ({
+      user,
+      session: null,
+      isAdmin,
+      loading,
+      signInWithGoogle,
+      signInWithEmailPassword,
+      createAccountWithEmailPassword,
+      signOut: signOutOfFirebase,
+    }),
+    [user, isAdmin, loading],
+  );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
