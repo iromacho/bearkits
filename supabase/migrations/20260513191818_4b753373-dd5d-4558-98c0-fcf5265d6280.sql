@@ -1,0 +1,2 @@
+-- Grant execute on has_role to anon and authenticated so RLS policies referencing it work for unauthenticated visitors.
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO anon, authenticated;

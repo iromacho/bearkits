@@ -1,0 +1,122 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --shadow-elegant: none;
+  --shadow-deep: none;
+}
+
+:root {
+  --radius: 0px;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.18 0.01 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.01 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.01 260);
+
+  /* Atleti red — accent only */
+  --primary: oklch(0.52 0.22 28);
+  --primary-foreground: oklch(0.99 0 0);
+
+  /* Atleti navy */
+  --navy: oklch(0.22 0.07 260);
+  --navy-foreground: oklch(0.99 0 0);
+
+  --secondary: oklch(0.18 0.01 260);
+  --secondary-foreground: oklch(0.99 0 0);
+
+  --muted: oklch(0.97 0.003 250);
+  --muted-foreground: oklch(0.45 0.01 260);
+
+  --accent: oklch(0.97 0.003 250);
+  --accent-foreground: oklch(0.18 0.01 260);
+
+  --destructive: oklch(0.55 0.22 28);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  --border: oklch(0.92 0.005 250);
+  --input: oklch(0.92 0.005 250);
+  --ring: oklch(0.52 0.22 28);
+
+  --chart-1: oklch(0.52 0.22 28);
+  --chart-2: oklch(0.22 0.07 260);
+  --chart-3: oklch(0.7 0.05 28);
+  --chart-4: oklch(0.5 0.12 260);
+  --chart-5: oklch(0.4 0.15 28);
+}
+
+.dark {
+  --background: oklch(0.12 0.01 260);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.14 0.01 260);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.14 0.01 260);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.6 0.22 28);
+  --primary-foreground: oklch(0.99 0 0);
+  --navy: oklch(0.28 0.08 260);
+  --navy-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.18 0.02 260);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.2 0.01 260);
+  --muted-foreground: oklch(0.7 0.01 260);
+  --accent: oklch(0.22 0.02 260);
+  --accent-foreground: oklch(0.98 0 0);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.6 0.22 28);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.005em;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+}
